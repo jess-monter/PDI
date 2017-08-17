@@ -169,7 +169,7 @@ class Main {
   }
 
   public static int[] getPixel(BufferedImage img, int x, int y) {
-    int argb = tmp.getRGB(x,y);
+    int argb = img.getRGB(x,y);
     int rgb[] = new int[] {
       (argb >> 16) & 0xff, //red
       (argb >>  8) & 0xff, //green
