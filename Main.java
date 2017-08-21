@@ -58,6 +58,11 @@ class Main {
     JMenuItem[] jFilters = {randomFilter, redFilter, greenFilter, blueFilter, grayDivisionFilter, grayConstantFilter, grayRedFilter, grayGreenFilter, grayBlueFilter};
     String[] jFilterLabels = {"Random", "Rojos", "Verdes", "Azules", "Grises Division", "Grises Constante", "Grises Rojo", "Grises Verde", "Grises Azul"};
 
+// toBrightness
+// toHighContrast
+// toInverseContrast
+// toMosaic
+
 
     j = new JFrame("Image Viewer");
     j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
