@@ -29,23 +29,41 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
+
+
+
+
+
 class Main {
   private JFrame      j;
   private JMenu       jmenu, jfiltros;
   private JMenuBar    jbar;
-  private JMenuItem   jmi, jexit;
+  private JMenuItem   jmi, jexit,randomFilter, redFilter, greenFilter, blueFilter, grayDivisionFilter, grayConstantFilter, grayRedFilter, grayGreenFilter, grayBlueFilter;
   private JPanel      container, jpanel, jpanelbar, jPanelModified;
   private JButton     jpre, jnext;
   JLabel              image, modified;
   ImageIcon           ic;
   Image               img;
 
+  public static void agregaFiltrosMenu(JMenu menu, JMenuItem[] item, String[] label) {
+    for(int i=0; i<item.length; i++){
+      item[i] = new JMenuItem(label[i]);
+      menu.add(item[i]);
+    }
+  }
+
   Main() {
+
+
+    JMenuItem[] jFilters = {randomFilter, redFilter, greenFilter, blueFilter, grayDivisionFilter, grayConstantFilter, grayRedFilter, grayGreenFilter, grayBlueFilter};
+    String[] jFilterLabels = {"Random", "Rojos", "Verdes", "Azules", "Grises Division", "Grises Constante", "Grises Rojo", "Grises Verde", "Grises Azul"};
+
+
     j = new JFrame("Image Viewer");
     j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     j.setPreferredSize(new Dimension(1100, 600));
     j.setLayout(new GridBagLayout());
-
+ 
     jpanel = new JPanel();
     jpanel.setLayout(new BorderLayout());
     image = new JLabel("");
@@ -128,6 +146,7 @@ class Main {
     jmenu.add(jexit);
     jbar.add(jmenu);
     jbar.add(jfiltros);
+    agregaFiltrosMenu(jfiltros, jFilters, jFilterLabels);
     j.setJMenuBar(jbar);
 
       
