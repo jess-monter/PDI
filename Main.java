@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 
 class Main {
   private JFrame      j;
-  private JMenu       jmenu;
+  private JMenu       jmenu, jfiltros;
   private JMenuBar    jbar;
   private JMenuItem   jmi, jexit;
   private JPanel      container, jpanel, jpanelbar, jPanelModified;
@@ -71,6 +71,7 @@ class Main {
     // Creating Menu
     jbar = new JMenuBar();
     jmenu = new JMenu("File");
+    jfiltros = new JMenu("Filtros");
     jmi = new JMenuItem("Open");
     jmi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
@@ -88,11 +89,6 @@ class Main {
             image.setIcon(new ImageIcon(scaledImage));
             modified.setIcon(new ImageIcon(scaledImage));
 
-/*            try{
-              Thread.sleep(3000);
-            }catch(InterruptedException ex){
-              Thread.currentThread().interrupt();
-            }*/
 
             for(int i = 0; i < tmp.getWidth(); i++){
               for(int j = 0; j < tmp.getHeight(); j++){
@@ -131,6 +127,7 @@ class Main {
     jmenu.add(jmi);
     jmenu.add(jexit);
     jbar.add(jmenu);
+    jbar.add(jfiltros);
     j.setJMenuBar(jbar);
 
       
