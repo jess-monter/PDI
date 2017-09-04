@@ -35,8 +35,9 @@ public class Main {
   private JMenuBar    jbar;
   private JMenuItem   reinicio, jmi, jexit,randomFilter, redFilter, greenFilter, blueFilter, grayDivisionFilter, 
                       grayConstantFilter, grayRedGreenFilter, grayGreenBlueFilter, grayBlueRedFilter,
-                      grayRedFilter, grayGreenFilter, grayBlueFilter, brightnessFilter, highContrastFilter,
-                      inverseContrastFilter, mosaicFilter;
+                      grayRedFilter, grayGreenFilter, grayBlueFilter, brightnessFilter, blurFilter, motionBlurFilter,
+                      findEdgesFilter, sharpenFilter, embossFilter, highContrastFilter,
+                      inverseContrastFilter, mosaicFilter, warholFilter;
   private JPanel      container, jpanel, jpanelbar, jPanelModified;
   JLabel              image, modified;
   ImageIcon           ic;
@@ -411,7 +412,6 @@ public class Main {
 
     brightnessFilter = new JMenuItem("Brillo");
     brightnessFilter.addActionListener(new java.awt.event.ActionListener() {
-      
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         String input = JOptionPane.showInputDialog(j,
                 "Introduzca un numero entre -128 y 128", 0);
@@ -459,9 +459,8 @@ public class Main {
       }
     });
 
-
-    highContrastFilter = new JMenuItem("Alto Contraste");
-    highContrastFilter.addActionListener(new ActionListener(){
+    blurFilter = new JMenuItem("Blur");
+    blurFilter.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent ae){
         for(int i = 0; i < tmpNew.getWidth(); i++){
           for(int j = 0; j < tmpNew.getHeight(); j++){
@@ -473,6 +472,124 @@ public class Main {
             };
 
             Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int rgbNuevo = nuevo.getRGB();
+            tmp.setRGB(i, j, rgbNuevo);
+          }
+        }
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    motionBlurFilter = new JMenuItem("Motion Blur");
+    motionBlurFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent ae){
+        for(int i = 0; i < tmpNew.getWidth(); i++){
+          for(int j = 0; j < tmpNew.getHeight(); j++){
+            int argb = tmpNew.getRGB(i,j);
+            int rgb[] = new int[] {
+              (argb >> 16) & 0xff, //red
+              (argb >>  8) & 0xff, //green
+              (argb      ) & 0xff  //blue
+            };
+
+            Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int rgbNuevo = nuevo.getRGB();
+            tmp.setRGB(i, j, rgbNuevo);
+          }
+        }
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    findEdgesFilter = new JMenuItem("Find Edges");
+    findEdgesFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent ae){
+        for(int i = 0; i < tmpNew.getWidth(); i++){
+          for(int j = 0; j < tmpNew.getHeight(); j++){
+            int argb = tmpNew.getRGB(i,j);
+            int rgb[] = new int[] {
+              (argb >> 16) & 0xff, //red
+              (argb >>  8) & 0xff, //green
+              (argb      ) & 0xff  //blue
+            };
+
+            Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int rgbNuevo = nuevo.getRGB();
+            tmp.setRGB(i, j, rgbNuevo);
+          }
+        }
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    sharpenFilter = new JMenuItem("Sharpen");
+    sharpenFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent ae){
+        for(int i = 0; i < tmpNew.getWidth(); i++){
+          for(int j = 0; j < tmpNew.getHeight(); j++){
+            int argb = tmpNew.getRGB(i,j);
+            int rgb[] = new int[] {
+              (argb >> 16) & 0xff, //red
+              (argb >>  8) & 0xff, //green
+              (argb      ) & 0xff  //blue
+            };
+
+            Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int rgbNuevo = nuevo.getRGB();
+            tmp.setRGB(i, j, rgbNuevo);
+          }
+        }
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    embossFilter = new JMenuItem("Emboss");
+    embossFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent ae){
+        for(int i = 0; i < tmpNew.getWidth(); i++){
+          for(int j = 0; j < tmpNew.getHeight(); j++){
+            int argb = tmpNew.getRGB(i,j);
+            int rgb[] = new int[] {
+              (argb >> 16) & 0xff, //red
+              (argb >>  8) & 0xff, //green
+              (argb      ) & 0xff  //blue
+            };
+
+            Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int rgbNuevo = nuevo.getRGB();
+            tmp.setRGB(i, j, rgbNuevo);
+          }
+        }
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    highContrastFilter = new JMenuItem("Alto Contraste");
+    highContrastFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent ae){
+        int red, green, blue;
+        for(int i = 0; i < tmpNew.getWidth(); i++){
+          for(int j = 0; j < tmpNew.getHeight(); j++){
+            int argb = tmpNew.getRGB(i,j);
+            int rgb[] = new int[] {
+              (argb >> 16) & 0xff, //red
+              (argb >>  8) & 0xff, //green
+              (argb      ) & 0xff  //blue
+            };
+
+            int total = (int)(rgb[0]+rgb[1]+rgb[2])/3;
+
+            if(total< 128){
+              red = 0;
+              green = 0;
+              blue = 0;
+            }else{
+              red = 255;
+              green = 255;
+              blue = 255;
+            }
+
+            Color nuevo = new Color(red, green, blue);
             int rgbNuevo = nuevo.getRGB();
             tmp.setRGB(i, j, rgbNuevo);
           }
@@ -484,6 +601,7 @@ public class Main {
     inverseContrastFilter = new JMenuItem("Contraste Inverso");
     inverseContrastFilter.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent ae){
+        int red, green, blue;
         for(int i = 0; i < tmpNew.getWidth(); i++){
           for(int j = 0; j < tmpNew.getHeight(); j++){
             int argb = tmpNew.getRGB(i,j);
@@ -493,7 +611,20 @@ public class Main {
               (argb      ) & 0xff  //blue
             };
 
-            Color nuevo = new Color(rgb[0],rgb[0],rgb[0]);
+            int total = (int)(rgb[0]+rgb[1]+rgb[2])/3;
+
+            if(total > 128){
+              red = 0;
+              green = 0;
+              blue = 0;
+            }else{
+              red = 255;
+              green = 255;
+              blue = 255;
+            }
+
+            Color nuevo = new Color(red, green, blue);
+
             int rgbNuevo = nuevo.getRGB();
             tmp.setRGB(i, j, rgbNuevo);
           }
@@ -504,6 +635,65 @@ public class Main {
 
     mosaicFilter = new JMenuItem("Mosaico");
     mosaicFilter.addActionListener(new ActionListener(){
+      public void actionPerformed(java.awt.event.ActionEvent evt){
+        String input = JOptionPane.showInputDialog(j,
+                "Introduzca un numero las dimensiones del recuadro. Ej: 40,30", 0);
+        int dimX = Integer.parseInt(input.split(",")[0]);
+        int dimY = Integer.parseInt(input.split(",")[1]);
+        int w = tmpNew.getWidth();
+        int h = tmpNew.getHeight();
+
+        w = divPlus(w,dimX);
+        h = divPlus(h,dimY);
+
+
+        int total = w*h;
+
+        for(int i=0; i<tmpNew.getWidth();){
+          for(int j=0; j<tmpNew.getHeight();){
+            int sumRed = 0;
+            int sumGreen = 0;
+            int sumBlue = 0;
+            int promRed = 0;
+            int promGreen = 0;
+            int promBlue = 0;
+
+            for(int k = i; k < i+w; k++){
+              for(int l = j; l < j+h; l++){
+                int argb = tmpNew.getRGB(k,l);
+                int rgb[] = new int[] {
+                  (argb >> 16) & 0xff, //red
+                  (argb >>  8) & 0xff, //green
+                  (argb      ) & 0xff  //blue
+                };
+
+                sumRed += rgb[0];
+                sumGreen += rgb[1];
+                sumBlue += rgb[2];
+              }
+            }
+            promRed = (int)sumRed/total;
+            promBlue = (int)sumBlue/total;
+            promGreen = (int)sumGreen/total;
+            Color nuevo = new Color(promRed, promGreen, promBlue);
+
+            for(int n=i; n<i+w; n++){
+              for(int m=j; m<j+h; m++){
+                int rgbNuevo = nuevo.getRGB();
+                tmp.setRGB(n, m, rgbNuevo);
+              }
+            }
+            j+= dimY;
+          }
+          i += dimX;
+        }
+
+        modified.setIcon(new ImageIcon(tmp));
+      }
+    });
+
+    warholFilter = new JMenuItem("Andy Warhol");
+    warholFilter.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent ae){
         for(int i = 0; i < tmpNew.getWidth(); i++){
           for(int j = 0; j < tmpNew.getHeight(); j++){
@@ -524,12 +714,12 @@ public class Main {
     });
 
 
-    JMenuItem[] jFilters = {reinicio, randomFilter, redFilter, greenFilter, blueFilter, grayDivisionFilter, 
-                        grayConstantFilter, grayRedGreenFilter, grayGreenBlueFilter, grayBlueRedFilter,
-                        grayRedFilter, 
-                        grayGreenFilter, grayBlueFilter, brightnessFilter,
-                        highContrastFilter, inverseContrastFilter, mosaicFilter};
-
+    JMenuItem[] jFilters = {reinicio, randomFilter, redFilter, greenFilter, blueFilter, 
+                            grayDivisionFilter, grayConstantFilter, grayRedGreenFilter, 
+                            grayGreenBlueFilter, grayBlueRedFilter, grayRedFilter, 
+                            grayGreenFilter, grayBlueFilter, brightnessFilter, 
+                            blurFilter, motionBlurFilter, findEdgesFilter, sharpenFilter, embossFilter, 
+                            highContrastFilter, inverseContrastFilter, mosaicFilter, warholFilter};
 
     jmenu.add(jmi);
     jmenu.add(jexit);
@@ -537,8 +727,6 @@ public class Main {
     jbar.add(jfiltros);
     agregaFiltrosMenu(jfiltros, jFilters);
     
-
-
     j.setJMenuBar(jbar);
     j.pack();
     j.setResizable(false);
@@ -546,6 +734,20 @@ public class Main {
   }
 
 
+  public static int divPlus(int tamCuadro, int tamImg) {
+    if(tamImg%tamCuadro!=0){
+      for(int i=tamCuadro; i<tamImg; i++){
+        if(tamImg%tamCuadro!=0){
+          tamCuadro += 1;
+        }else{
+          i = tamImg;
+        }
+      }
+    }else{
+      return tamCuadro;
+    }
+    return tamCuadro;
+  }
 
 
   /**
