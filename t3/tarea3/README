@@ -1,0 +1,13 @@
+Monter Gallardo Jessica
+
+Requerimientos para abrir el programa.
+Java 7 o superior.
+
+
+Instrucciones
+
+1.- Descargar el archivo comprimido tarea1.zip
+2.- Descomprimir el archivo
+3.- Entrar a la carpeta src
+4.- En consola, compilar el código con: $> javac Main.java
+5.- Ejecutar con: $> java Main

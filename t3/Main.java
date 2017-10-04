@@ -33,7 +33,7 @@ public class Main {
   private JFrame      j;
   private JMenu       jmenu, jfiltros;
   private JMenuBar    jbar;
-  private JMenuItem   reinicio, jmi, jexit, waterMarkFilter;
+  private JMenuItem   reinicio, jmi, jexit, waterMarkFilter, saveModified;
   private JPanel      container, containerWarhol, jpanel, jpanelbar, jPanelModified, jPanelWarhol;
   JLabel              image, modified, modifiedA, modifiedB, modifiedC, modifiedD;
   ImageIcon           ic;
@@ -60,18 +60,13 @@ public class Main {
 
     j = new JFrame("Filter Applicator");
     j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    j.setPreferredSize(new Dimension(1100, 600));
+    j.setPreferredSize(new Dimension(1200, 816));
     j.setLayout(new GridBagLayout());
  
     jpanel = new JPanel();
     jpanel.setLayout(new BorderLayout());
     image = new JLabel("");
     modified = new JLabel("");
-    modifiedA = new JLabel("NORTHWEST");
-    modifiedB = new JLabel("NORTHEAST");
-    modifiedC = new JLabel("SOUTHWEST");
-    modifiedD = new JLabel("SOUTHEAST");
-    
 
     jPanelModified = new JPanel();
 
@@ -106,7 +101,7 @@ public class Main {
 
             test = ImageIO.read(file);
            
-            Image scaledImage = test.getScaledInstance(500,500,Image.SCALE_SMOOTH);
+            Image scaledImage = test.getScaledInstance(600,408,Image.SCALE_SMOOTH);
             tmpNew = toBufferedImage(scaledImage);
             tmp = toBufferedImage(scaledImage);
             image.setIcon(new ImageIcon(scaledImage));
@@ -124,6 +119,21 @@ public class Main {
     jexit.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         System.exit(0);
+      }
+    });
+
+    saveModified = new JMenuItem("Guardar");
+    saveModified.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        String input = JOptionPane.showInputDialog(j,
+                "Nombre de la Imagen", 0);
+        String name = input + ".png";
+        try{
+          ImageIO.write(tmp, "PNG", new File(name));
+        }catch(IOException ex) {
+          System.out.println("error");
+        }
+        
       }
     });
 
@@ -152,15 +162,10 @@ public class Main {
     waterMarkFilter = new JMenuItem("Remueve marca de agua");
     waterMarkFilter.addActionListener(new ActionListener(){
       public void actionPerformed(java.awt.event.ActionEvent evt){
-        int dimX = 1;
-        int dimY = 1;
+
         int ancho = tmpNew.getWidth();
         int alto = tmpNew.getHeight();
-
-        int w = divPlus(dimX, ancho);
-        int h = divPlus(dimY, alto);
-
-        int total = w*h;
+        int promTotal = 0;
 
         for(int i = 0; i < tmpNew.getWidth(); i++){
           for(int j = 0; j < tmpNew.getHeight(); j++){
@@ -171,52 +176,20 @@ public class Main {
               (argb      ) & 0xff  //blue
             };
 
-            if(rgb[0] > rgb[1]){
-              System.out.println(i + "," + j + " =R:" + rgb[0] + " G:" + rgb[1] + " B:" + rgb[2]);
+            if((rgb[0]-rgb[1]) > 10 || (rgb[0] - rgb[2]) > 10){
+              promTotal = (int)((rgb[0]+rgb[1]+rgb[2])/3)+50;
+              if(promTotal > 255){
+                promTotal = 255;
+              }
+              Color nuevo = new Color(promTotal, promTotal, promTotal);
+              //Color nuevo = new Color(255, 255, 255);
+              int rgbNuevo = nuevo.getRGB();
+              tmp.setRGB(i,j,rgbNuevo);
             }
           }
         }
-
-        for(int i=0; i<ancho;){
-          for(int j=0; j<alto;){
-            int sumRed = 0;
-            int sumGreen = 0;
-            int sumBlue = 0;
-            int promRed = 0;
-            int promGreen = 0;
-            int promBlue = 0;
-
-            for(int k = i; k < i+w; k++){
-              for(int l = j; l < j+h; l++){
-                int argb = tmpNew.getRGB(k,l);
-                int rgb[] = new int[] {
-                  (argb >> 16) & 0xff, //red
-                  (argb >>  8) & 0xff, //green
-                  (argb      ) & 0xff  //blue
-                };
-
-                sumRed += rgb[0];
-                sumGreen += rgb[1];
-                sumBlue += rgb[2];
-              }
-            }
-            promRed = (int)sumRed/total;
-            promBlue = (int)sumBlue/total;
-            promGreen = (int)sumGreen/total;
-            Color nuevo = new Color(promRed, promGreen, promBlue);
-
-            for(int n=i; n<i+w; n++){
-              for(int m=j; m<j+h; m++){
-                int rgbNuevo = nuevo.getRGB();
-                if(promRed>promBlue && promRed > promGreen){
-                  tmp.setRGB(n, m, rgbNuevo);
-                }
-              }
-            }
-            j+= h;
-          }
-          i += w;
-        }
+   
+        
 
         modified.setIcon(new ImageIcon(tmp));
       }
@@ -226,6 +199,7 @@ public class Main {
     JMenuItem[] jFilters = {reinicio, waterMarkFilter};
 
     jmenu.add(jmi);
+    jmenu.add(saveModified);
     jmenu.add(jexit);
     jbar.add(jmenu);
     jbar.add(jfiltros);
@@ -235,78 +209,6 @@ public class Main {
     j.pack();
     j.setResizable(false);
     j.setVisible(true);
-  }
-
-
-  public BufferedImage convolucion(BufferedImage imgOld, BufferedImage imgNew, double[][] matriz, double factor, double bias){
-    int ancho = imgOld.getWidth();
-    int alto = imgOld.getHeight();
-    for(int i = 0; i<ancho;i++){
-      for(int j = 0; j<alto;j++){
-        Color c = null;
-        double t = 0;
-        Color tc = new Color(imgOld.getRGB(i, j));
-        double conRed = 0;
-        double conGreen = 0;
-        double conBlue = 0;
-        int mati = 0;
-        int matj = 0;
-        int matPerPixel = (int)matriz.length/2;
-        for(int k = i-matPerPixel;k<=i+matPerPixel;k++){
-          for(int l = j-matPerPixel;l<=j+matPerPixel;l++){
-            int rgb = 0;
-            try{
-              rgb = imgOld.getRGB(k,l);
-            }catch (Exception e) {}
-            Color ca = new Color(rgb);
-            conRed += ca.getRed()*matriz[mati][matj];
-            conGreen += ca.getGreen()*matriz[mati][matj];
-            conBlue += ca.getBlue()*matriz[mati][matj];
-            matj++;
-          }
-          matj = 0;
-          mati++;
-        }
-        c = new Color(rangoCorrecto((int)(factor*conRed+bias)),
-                      rangoCorrecto((int)(factor*conGreen+bias)),
-                      rangoCorrecto((int)(factor*conBlue+bias)));
-        imgNew.setRGB(i,j,c.getRGB());
-      }
-    }
-    return imgNew;
-  }
-
-  public static int rangoCorrecto(int val){
-    if(val > 255){
-      return 255;
-    }else if(val < 0){
-      return 0;
-    }else{
-      return val;
-    }
-  }
-
-
-
-  /**
-   * Ajusta las dimensiones de un recuadro para el filtro mosaico.
-   * @param tamCuadro tamanio del recuadro
-   * @param tamImg tamanio de la imagen
-   * @return el valor adecuado.
-   */
-  public static int divPlus(int tamCuadro, int tamImg) {
-    if(tamImg%tamCuadro!=0){
-      for(int i=tamCuadro; i<tamImg; i++){
-        if(tamImg%tamCuadro!=0){
-          tamCuadro += 1;
-        }else{
-          i = tamImg;
-        }
-      }
-    }else{
-      return tamCuadro;
-    }
-    return tamCuadro;
   }
 
 
